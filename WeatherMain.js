@@ -6,15 +6,22 @@ import {
   TextInput,
 } from 'react-native';
 
+import Forecast from './Forecast'
+
 export default class WeatherMain extends Component {
 
 	constructor(props) {
     	super(props);
 
     	this.state = {
-    		zip: ''
-    	};
-  	}
+    		zip: '',
+        forecast: {
+          main: 'Snow',
+          description: 'very cold',
+          temp: 3
+        }
+    	}
+  }
 
     _handleInputTextDidChanged(event) {
 		this.setState({zip: event.nativeEvent.text});
@@ -27,6 +34,7 @@ export default class WeatherMain extends Component {
           	地区邮编： {this.state.zip}
      	   </Text>
      	   <TextInput style={styles.input} onSubmitEditing={(event) => this._handleInputTextDidChanged(event)}/>
+         <Forecast main={this.state.forecast.main} description={this.state.forecast.description} temp={this.state.forecast.temp}/>
     	 </View>
    	 );
   }
