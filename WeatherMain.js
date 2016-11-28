@@ -16,12 +16,24 @@ export default class WeatherMain extends Component {
 
     	this.state = {
     		zip: '',
-        forecast: {
-          main: 'Snow',
-          description: 'very cold',
-          temp: 3
-        }
-    	}
+        forecast: null
+    	};
+      fetch('http://wthrcdn.etouch.cn/weather_mini?citykey=101010100')
+        .then((res) => {
+          return res.json()
+        })
+        .then((responseJSON) => {
+          this.setState({
+            forecast: {
+              main: responseJSON.data.forecast[0].type,
+              description: responseJSON.data.ganmao,
+              temp: responseJSON.data.wendu,
+            }
+          });
+        })
+        .catch((error) => {
+          console.warn(error);
+        })
   }
 
     _handleInputTextDidChanged(event) {
@@ -29,6 +41,10 @@ export default class WeatherMain extends Component {
 	}
 
   	render() {
+      var content = null;
+      if (this.state.forecast !== null) {
+        content = <Forecast main={this.state.forecast.main} description={this.state.forecast.description} temp={this.state.forecast.temp}/>;
+      }
     	return (
      	 <View style={styles.container}>
         <Image source={require("./background.jpg")} resizeMode='cover' style={styles.background}>
@@ -37,7 +53,7 @@ export default class WeatherMain extends Component {
               	地区邮编： {this.state.zip}
          	   </Text>
          	   <TextInput style={styles.input} onSubmitEditing={(event) => this._handleInputTextDidChanged(event)}/>
-             <Forecast main={this.state.forecast.main} description={this.state.forecast.description} temp={this.state.forecast.temp}/>
+             {content}
           </View>
         </Image>
        </View>
